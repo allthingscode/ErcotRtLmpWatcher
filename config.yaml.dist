@@ -1,0 +1,15 @@
+SmartThings:
+  APIToken:  "<big-long-token>"
+  ThermostatCommandURL:  "https://api.smartthings.com/v1/devices/<big-long-identifier>/commands"
+
+Gmail:
+  Oauth2Config:
+    ClientID: "<big-long-google-client-id>.apps.googleusercontent.com"
+    ClientSecret: "<client-password>"
+  Oauth2Token:
+    AccessToken: "<huge-google-oauth2-access-token>"
+    RefreshToken:  "<big-google-oauth2-refresh-token>"
+  To:  "<recipient-email-address>"
+  SubjectPrefix: "ThermostatUpdater:  "
+  
+  
