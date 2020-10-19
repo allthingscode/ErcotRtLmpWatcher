@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"time"
 
-	"allthingscode.com/energy/smartthings/thermostatupdater/ercot"
-	"allthingscode.com/energy/smartthings/thermostatupdater/smartthings"
+	"github.com/allthingscode/ErcotRtLmpWatcher/ercot"
+	"github.com/allthingscode/ErcotRtLmpWatcher/smartthings"
 )
 
 var exitRequestReceived = false

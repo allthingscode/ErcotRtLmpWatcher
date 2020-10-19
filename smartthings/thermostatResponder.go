@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"allthingscode.com/energy/smartthings/thermostatupdater/notify"
+	"github.com/allthingscode/ErcotRtLmpWatcher/notify"
 )
 
 var lastTempUsed uint64

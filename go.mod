@@ -1,4 +1,4 @@
-module allthingscode.com/energy/smartthings/thermostatupdater
+module github.com/allthingscode/ErcotRtLmpWatcher
 
 go 1.15
 
