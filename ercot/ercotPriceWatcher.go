@@ -12,6 +12,7 @@ import (
 )
 
 // TODO:  Update this to use channels for a pub/sub model of communication.
+// https://flaviocopes.com/golang-event-listeners/
 
 // RtLmpPriceWebpageURL is the public webpage that has current pricing
 const RtLmpPriceWebpageURL = "http://www.ercot.com/content/cdr/html/hb_lz"
