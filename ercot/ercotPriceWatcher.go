@@ -11,6 +11,8 @@ import (
 	"strconv"
 )
 
+// TODO:  Update this to use channels for a pub/sub model of communication.
+
 // RtLmpPriceWebpageURL is the public webpage that has current pricing
 const RtLmpPriceWebpageURL = "http://www.ercot.com/content/cdr/html/hb_lz"
 
