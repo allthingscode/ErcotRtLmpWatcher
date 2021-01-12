@@ -79,7 +79,8 @@ func HandlePrice(price float32) error {
 // getThermostatTempForCooling determines the ideal thermostat setting, based on price
 func getThermostatTempForCooling(price float32) (uint64, error) {
 
-	const MinTemp = uint64(73)
+	// TODO:  Put this in a config file so it can be easily adjusted
+	const MinTemp = uint64(72)
 
 	type priceRange struct {
 		low  float32
