@@ -40,14 +40,13 @@ func watchPrices() error {
 
 	setupCloseHandler()
 
+	// TODO:  Move this loop into the ercotPriceWatcher.go script
 	for exitRequestReceived == false {
 
-		price, asOfTimestampRaw, err := ercot.GetRtLmpPrice()
+		price, asOfTimestampRaw, err := ercot.GetRtLmpPrice("LZ_NORTH")
 		if err != nil {
 			return err
 		}
-
-		// TODO:  Save ercot stats to a google spreadsheet
 
 		thermostatHandlerErr := smartthings.HandlePrice(price)
 		if thermostatHandlerErr != nil {
@@ -86,6 +85,7 @@ func setupCloseHandler() {
 }
 
 // calculateDurationUntilNextReload calculates the duration to wait before the next ERCOT reload
+// TODO:  Move this into the ercotPriceWatcher.go script
 func calculateDurationUntilNextReload(lastErcotReload string) (time.Duration, error) {
 
 	myLocation, loadLocationError := time.LoadLocation("America/Chicago")

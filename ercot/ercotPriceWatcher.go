@@ -21,7 +21,7 @@ const RtLmpPriceWebpageURL = "http://www.ercot.com/content/cdr/html/hb_lz"
 const RtLmpLastUpdatedTimestampLayOut = "Jan 02, 2006 15:04:05"
 
 // GetRtLmpPrice returns the current ERCOT price
-func GetRtLmpPrice() (float32, string, error) {
+func GetRtLmpPrice(settlementZone string) (float32, string, error) {
 	// Get the HTML
 	html, err := getWebpageHTML()
 	if err != nil {
@@ -29,7 +29,7 @@ func GetRtLmpPrice() (float32, string, error) {
 	}
 	//fmt.Println(html)
 
-	price, asOfTimestampRaw, err := extractPrice(html)
+	price, asOfTimestampRaw, err := extractPrice(html, settlementZone)
 	if err != nil {
 		return float32(0), "", err
 	}
@@ -38,7 +38,7 @@ func GetRtLmpPrice() (float32, string, error) {
 	return price, asOfTimestampRaw, nil
 }
 
-// getErcotWebpageHTML returns the raw HTML from the ERCOT live pricing web page
+// getWebpageHTML returns the raw HTML from the ERCOT live pricing web page
 func getWebpageHTML() (string, error) {
 
 	response, httpGetError := http.Get(RtLmpPriceWebpageURL)
@@ -54,9 +54,11 @@ func getWebpageHTML() (string, error) {
 	return string(htmlBytes), nil
 }
 
-// TODO:  Expand to return any of the prices for any of the settlement zones, instead of hard-coding to LZ_NORTH
-// getCurrentPrice returns the current price for LZ_NORTH on the ERCOT web site
-func extractPrice(html string) (float32, string, error) {
+// extractPrice returns the current price for the requested settlement zone on the ERCOT web site
+func extractPrice(
+	html string,
+	settlementZone string,
+) (float32, string, error) {
 
 	// Extract the Last Updated timestamp before we remove spaces
 	asOfRegExp := regexp.MustCompile(`<div[^>]+>Last Updated:&nbsp;[ ]*([^<]+)</div>`)
@@ -79,18 +81,18 @@ func extractPrice(html string) (float32, string, error) {
 	// Parse the HTML
 	// TODO:  See if we can just look for submatches in the row html
 	// <tr><tdclass="tdLeft">LZ_NORTH</td><tdclass="tdLeft">18.30</td><tdclass="tdLeftred_text">-0.25</td><tdclass="tdLeft">18.30</td><tdclass="tdLeftred_text">-0.25</td></tr>
-	lzNorthRowRegExp := regexp.MustCompile(`<tr><tdclass="[^"]*">LZ_NORTH</td><tdclass="[^"]*">[^<]*</td><tdclass="[^"]*">[^<]*</td><tdclass="[^"]*">([^<]+)</td><tdclass="[^"]*">[^<]*</td></tr>`)
-	lzNorthRowHTML := lzNorthRowRegExp.FindString(html)
-	//fmt.Println(lzNorthRowHTML)
+	settlementZoneRowRegExp := regexp.MustCompile(`<tr><tdclass="[^"]*">` + settlementZone + `</td><tdclass="[^"]*">[^<]*</td><tdclass="[^"]*">[^<]*</td><tdclass="[^"]*">([^<]+)</td><tdclass="[^"]*">[^<]*</td></tr>`)
+	settlementZoneRowHTML := settlementZoneRowRegExp.FindString(html)
+	//fmt.Println(settlementZoneRowHTML)
 	//fmt.Println("\n")
 
 	pricePointCellsRegExp := regexp.MustCompile(`<td[^>]+">([^<]+)</td>`)
-	pricePointCellsHTMLMatches := pricePointCellsRegExp.FindAllStringSubmatch(lzNorthRowHTML, -1)
+	pricePointCellsHTMLMatches := pricePointCellsRegExp.FindAllStringSubmatch(settlementZoneRowHTML, -1)
 	if pricePointCellsHTMLMatches == nil {
-		return float32(0), asOfString, errors.New("Unable to extract price point table cells from LZ_NORTH html row")
+		return float32(0), asOfString, errors.New("Unable to extract price point table cells from " + settlementZone + " html row")
 	}
 	if len(pricePointCellsHTMLMatches) != 5 {
-		return float32(0), asOfString, errors.New("Got an unexpected number of price point table cells from the LZ_NORTH html row:  " + fmt.Sprint(len(pricePointCellsHTMLMatches)))
+		return float32(0), asOfString, errors.New("Got an unexpected number of price point table cells from the " + settlementZone + " html row:  " + fmt.Sprint(len(pricePointCellsHTMLMatches)))
 	}
 
 	// The 4th table cell is "RTORPA + RTORDPA + LMP"

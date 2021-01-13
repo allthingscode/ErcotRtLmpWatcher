@@ -30,6 +30,7 @@ type configuration struct {
 	ThermostatCommandURL string
 }
 
+var isConfigured bool = false
 var config = configuration{}
 
 // Configure initializes settings for this package
@@ -54,6 +55,8 @@ func Configure(
 		gmTo,
 		gmSubjectPrefix,
 	)
+
+	isConfigured = true
 }
 
 // HandlePrice will adjust the termostat based on price

@@ -24,6 +24,7 @@ type configuration struct {
 	SubjectPrefix            string
 }
 
+var isConfigured bool = false
 var config = configuration{}
 
 // Configure initializes settings for this package
@@ -41,6 +42,8 @@ func Configure(
 	config.Oauth2TokenRefreshToken = Oauth2TokenRefreshToken
 	config.To = To
 	config.SubjectPrefix = SubjectPrefix
+
+	isConfigured = true
 }
 
 // SendEmail will send an email to me
